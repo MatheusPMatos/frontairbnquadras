@@ -17,12 +17,15 @@
 
           <q-card-section>
             <q-input class="q-mb-md" clearable rounded v-model="form.email" placeholder="meu@email.com"
-              @blur="$v.form.email.$touch" :error="$v.form.email.$error" error-message="Deve ser um e-mail válido."
-              outlined @keypress.enter="fazerLogin">
+              @blur="v$.email.$touch()" :error="v$.email.$error" error-message="Deve ser um e-mail válido." outlined
+              @keypress.enter="fazerLogin">
               <template v-slot:prepend>
                 <q-icon name="mdi-email-outline" class="cursor-pointer" color='primary' />
               </template>
             </q-input>
+
+
+
 
             <q-input outlined rounded v-model="form.password" :type="isPwd ? 'password' : 'text'"
               @keypress.enter="fazerLogin">
@@ -66,58 +69,53 @@
 </template>
 
 <script>
-import { required, email } from 'vuelidate/lib/validators'
+import useVuelidate from '@vuelidate/core'
+import { required, email } from '@vuelidate/validators'
+import { reactive, ref } from 'vue'
 
 export default {
   name: 'login-page',
-  data() {
-    return {
-      modalEsqueciSenha: false,
-      emailRedefinicao: null,
-      form: {
-        email: null,
-        password: null
-      },
-      contasCliente: {},
-      isPwd: true,
-      loading: false
-    }
-  },
-  validations: {
-    form: {
+  setup() {
+    const form = reactive({
+      email: null,
+      password: null
+    })
+
+    const loading = ref(false)
+    const isPwd = ref(true)
+
+    const rules = {
       email: { required, email },
       password: { required }
-    },
-    emailRedefinicao: { required, email }
-  },
-  methods: {
-    fazerLogin() {
-      this.$v.form.$touch()
-      if (this.$v.form.$error) {
+    }
+
+    const v$ = useVuelidate(rules, form)
+
+    const fazerLogin = () => {
+      v$.value.$touch()
+      if (v$.value.$error) {
         this.$q.notify('Informe usuário e senha corretamente.')
         return
       }
-      this.loading = true
-      this.$store.dispatch('UserLogin', this.form)
-        .then(data => {
-          // if (Object.keys(this.contasCliente).length == 1) {
-          //   // logar direto
-          // }
-          this.loading = false
-          // .params = { modalEscolhaUnidadeNegocio: true }
+      loading.value = true
+      // Simule a chamada ao Vuex (substitua conforme sua lógica)
+      this.$store.dispatch('UserLogin', form)
+        .then(() => {
+          loading.value = false
         })
-        .catch(err => {
-          console.error('exStore', err)
-          this.loading = false
+        .catch((err) => {
+          console.error('Erro de login:', err)
+          loading.value = false
         })
-    },
-    clear() {
-      this.form.email = ''
-      this.form.password = ''
-      this.$v.form.$reset()
     }
-  },
-  mounted() {
+
+    return {
+      form,
+      v$,
+      isPwd,
+      loading,
+      fazerLogin
+    }
   }
 }
 </script>

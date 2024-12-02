@@ -29,6 +29,7 @@ const user = {
   actions: {
     async UserLogin({ commit, dispatch }, user) {
       user.email = user.email.trim();
+      console.log("BATEU AQUI");
       try {
         const { data } = await RealizarLogin(user);
         localStorage.setItem("token", JSON.stringify(data.token));

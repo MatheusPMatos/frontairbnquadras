@@ -1,4 +1,3 @@
-import { route } from "quasar/wrappers";
 import { createRouter, createWebHistory } from "vue-router";
 import { Notify } from "quasar";
 import routes from "./routes";
