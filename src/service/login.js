@@ -2,7 +2,7 @@ import request from "src/service/request";
 
 export function RealizarLogin(user) {
   return request({
-    url: "/auth/login/",
+    url: "/user/auth",
     method: "post",
     data: user,
   });
@@ -10,7 +10,7 @@ export function RealizarLogin(user) {
 
 export function RealizarLogout(user) {
   return request({
-    url: "/auth/logout/",
+    url: "/user/logout/",
     method: "post",
     data: user,
   });
@@ -18,7 +18,7 @@ export function RealizarLogout(user) {
 
 export function RefreshToken() {
   return request({
-    url: "/auth/refresh_token",
+    url: "/user/refresh_token",
     method: "post",
   });
 }

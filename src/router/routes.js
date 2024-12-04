@@ -2,14 +2,32 @@ const routes = [
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
-    redirect: { name: "contatos" },
-    meta: { requiresAuth: true }, // Marcando como rota protegida
-    children: [{ path: "", component: () => import("pages/IndexPage.vue") }],
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: "home",
+        component: () => import("pages/homecomprador/home_comprador.vue"),
+      },
+      {
+        path: "homev",
+        component: () => import("pages/homevendedor/homevendedor.vue"),
+      },
+      {
+        path: "agendamento",
+        component: () => import("pages/agendamento/agendamentopage.vue"),
+      },
+    ],
   },
   {
     path: "/login",
     name: "login",
     component: () => import("pages/Login.vue"),
+    meta: { requiresAuth: false },
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("pages/cadastro/cadastropage.vue"),
     meta: { requiresAuth: false },
   },
 

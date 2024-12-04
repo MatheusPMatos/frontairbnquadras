@@ -6,8 +6,8 @@
         <q-card bordered class="card q-pa-md shadow-10"
           style="border-top: 5px solid #3E72AF; background-color: rgba(255,255,255,0.75); border-radius: 20px">
           <q-card-section class="text-primary text-center">
-            <q-img src="/izing-logo_5_transparent.png" spinner-color="white" style="height: 120px; max-width: 300px"
-              class="q-mb-lg q-px-md" />
+            <q-img src="src/assets/quasar-logo-vertical.svg" spinner-color="white"
+              style="height: 120px; max-width: 300px" class="q-mb-lg q-px-md" />
             <q-separator spaced />
           </q-card-section>
           <q-card-section class="text-primary">
@@ -23,10 +23,6 @@
                 <q-icon name="mdi-email-outline" class="cursor-pointer" color='primary' />
               </template>
             </q-input>
-
-
-
-
             <q-input outlined rounded v-model="form.password" :type="isPwd ? 'password' : 'text'"
               @keypress.enter="fazerLogin">
               <template v-slot:prepend>
@@ -50,15 +46,8 @@
               </template>
             </q-btn>
           </q-card-actions>
-          <!-- <q-btn
-            flat
-            color="info"
-            no-caps
-            dense
-            class="q-px-sm"
-            label="Esqueci a senha"
-            @click="modalEsqueciSenha=true"
-          /> -->
+          <q-btn flat color="info" no-caps dense class="q-px-sm" label="Não tem Cadastro? Registre- se"
+            @click="goToRegister" />
 
           <q-inner-loading :showing="loading" />
         </q-card>
@@ -72,17 +61,28 @@
 import useVuelidate from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 import { reactive, ref } from 'vue'
+import { useStore } from 'vuex'
 
 export default {
   name: 'login-page',
+  data() {
+    return {
+      isPwd: true,
+    }
+  },
+  methods: {
+    goToRegister() {
+      this.$router.push({ name: 'register' });
+    }
+  },
   setup() {
+
+
+
     const form = reactive({
       email: null,
       password: null
     })
-
-    const loading = ref(false)
-    const isPwd = ref(true)
 
     const rules = {
       email: { required, email },
@@ -90,16 +90,20 @@ export default {
     }
 
     const v$ = useVuelidate(rules, form)
+    const $store = useStore()
+    const loading = ref(false)
+
+
 
     const fazerLogin = () => {
+      console.log("bateu aqui")
       v$.value.$touch()
       if (v$.value.$error) {
-        this.$q.notify('Informe usuário e senha corretamente.')
+        $q.notify('Informe usuário e senha corretamente.')
         return
       }
       loading.value = true
-      // Simule a chamada ao Vuex (substitua conforme sua lógica)
-      this.$store.dispatch('UserLogin', form)
+      $store.dispatch('UserLogin', form)
         .then(() => {
           loading.value = false
         })
@@ -108,15 +112,11 @@ export default {
           loading.value = false
         })
     }
-
     return {
-      form,
-      v$,
-      isPwd,
-      loading,
-      fazerLogin
+      form, v$, fazerLogin
     }
-  }
+
+  },
 }
 </script>
 <style scoped>

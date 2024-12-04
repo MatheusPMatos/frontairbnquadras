@@ -6,17 +6,16 @@
 const Notifications = {
   state: {
     notifications: [],
-    notifications_p: []
   },
   mutations: {
     // OK
-    UPDATE_NOTIFICATIONS (state, payload) {
-      state.notifications = payload
+    UPDATE_NOTIFICATIONS(state, payload) {
+      state.notifications = payload;
     },
-    UPDATE_NOTIFICATIONS_P (state, payload) {
-      state.notifications_p = payload
-    }
-  }
-}
+    UPDATE_NOTIFICATIONS_P(state, payload) {
+      state.notifications_p = payload;
+    },
+  },
+};
 
-export default Notifications
+export default Notifications;

@@ -4,45 +4,31 @@ import { Notify, Dark } from "quasar";
 const user = {
   state: {
     token: null,
-    isAdmin: false,
-    isSuporte: false,
+    isComprador: false,
+    isVendedor: false,
   },
   mutations: {
-    SET_IS_SUPORTE(state, payload) {
-      const domains = ["@"];
-      let authorized = false;
-      domains.forEach((domain) => {
-        if (
-          payload?.email
-            .toLocaleLowerCase()
-            .indexOf(domain.toLocaleLowerCase()) !== -1
-        ) {
-          authorized = true;
-        }
-      });
-      state.isSuporte = authorized;
+    SET_IS_VENDEDOR(state, payload) {
+      state.isAdmin = payload.profile === "vendedor";
     },
-    SET_IS_ADMIN(state, payload) {
-      state.isAdmin = !!(state.isSuporte || payload.profile === "admin");
+    SET_IS_COMPRADOR(state, payload) {
+      state.isAdmin = payload.profile === "comprador";
     },
   },
   actions: {
     async UserLogin({ commit, dispatch }, user) {
       user.email = user.email.trim();
-      console.log("BATEU AQUI");
       try {
         const { data } = await RealizarLogin(user);
         localStorage.setItem("token", JSON.stringify(data.token));
         localStorage.setItem("username", data.username);
         localStorage.setItem("profile", data.profile);
-        localStorage.setItem("userId", data.userId);
-        localStorage.setItem("usuario", JSON.stringify(data));
 
-        if (data?.configs?.isDark) {
-          Dark.set(data.configs.isDark);
-        }
-        commit("SET_IS_SUPORTE", data);
-        commit("SET_IS_ADMIN", data);
+        // if (data?.configs?.isDark) {
+        //   Dark.set(data.configs.isDark);
+        // }
+        commit("SET_IS_VENDEDOR", data);
+        commit("SET_IS_COMPRADOR", data);
 
         Notify.create({
           type: "positive",
@@ -51,13 +37,13 @@ const user = {
           progress: true,
         });
 
-        if (data.profile === "admin") {
+        if (data.profile === "vendedor") {
           this.$router.push({
-            name: "home-dashboard",
+            path: "homev",
           });
         } else {
           this.$router.push({
-            name: "atendimento",
+            path: "home",
           });
         }
       } catch (error) {

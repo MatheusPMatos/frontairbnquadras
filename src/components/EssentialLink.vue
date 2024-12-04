@@ -1,14 +1,6 @@
 <template>
-  <q-item
-    clickable
-    tag="a"
-    target="_blank"
-    :href="props.link"
-  >
-    <q-item-section
-      v-if="props.icon"
-      avatar
-    >
+  <q-item clickable @click="navigate">
+    <q-item-section v-if="props.icon" avatar>
       <q-icon :name="props.icon" />
     </q-item-section>
 
@@ -20,6 +12,8 @@
 </template>
 
 <script setup>
+import routes from 'src/router/routes';
+
 defineOptions({
   name: 'EssentialLink'
 })
@@ -35,7 +29,7 @@ const props = defineProps({
     default: ''
   },
 
-  link: {
+  path: {
     type: String,
     default: '#'
   },
@@ -45,4 +39,21 @@ const props = defineProps({
     default: ''
   }
 })
+
+// Método de navegação
+const navigate = () => {
+  // Verifica se o link é relativo e utiliza o Vue Router para navegação
+  if (props.path.startsWith('/')) {
+    // Substitui a navegação, sem adicionar à pilha de histórico
+    routes.pop({
+      path: props.path,
+
+    })
+  } else {
+    // Ou usa push caso queira adicionar à pilha de histórico
+    routes.push({
+      path: props.path
+    })
+  }
+}
 </script>

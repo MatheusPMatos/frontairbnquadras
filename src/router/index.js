@@ -8,10 +8,10 @@ const Router = createRouter({
   routes,
 });
 
-const whiteListName = ["login"];
+const whiteListName = ["login", "register"];
 
 Router.beforeEach((to, from, next) => {
-  const token = JSON.parse(localStorage.getItem("token"));
+  const token = localStorage.getItem("token");
 
   if (!token && !whiteListName.includes(to.name)) {
     Notify.create({
@@ -21,6 +21,14 @@ Router.beforeEach((to, from, next) => {
     });
     next({ name: "login" });
   } else {
+    if (to.path === "/" && from.path === "/") {
+      const userType = localStorage.getItem("profile");
+      if (userType === "vendedor") {
+        next({ path: "homev" });
+      } else {
+        next({ path: "home" });
+      }
+    }
     next();
   }
 });
